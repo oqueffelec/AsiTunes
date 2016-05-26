@@ -90,6 +90,22 @@ public class Controleur{
      return null;
   }
 
+  public void entrerNomMusique(String nomMusique){
+    if (verifierNomMusique(nomMusique)){
+      String data = getMusic(nomMusique);
+      Musique musique = new Musique(data);
+      this.maPlaylist.ajouterMusique(musique);
+    }
+  }
+
+  public boolean verifierNomMusique(String nomMusique){
+    if (nomMusique.equals("Billie Jean")||nomMusique.equals("Rolling Stones")||nomMusique.equals("Lose Yourself"))
+      return true;
+    else
+      return false;
+  }
+
+
 public void chooseMusic(String nomMusique){
   String data = getMusic(nomMusique);
   Musique musique=creerMusique(nomMusique);
@@ -118,19 +134,9 @@ public void chooseMusic(String nomMusique){
       this.musique=musique;
     }
 
-    public void entrerNomMusique(String nomMusique){
-      verifierNomMusique(nomMusique);
-    }
 
     public String getNom(){
       return this.musique;
-    }
-
-    public boolean verifierNomMusique(String nomMusique){
-      if (nomMusique=="Billie Jean"||nomMusique=="Rolling Stones"||nomMusique=="Lose Yourself")
-        return true;
-      else
-        return false;
     }
 
 

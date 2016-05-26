@@ -41,10 +41,10 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.* ;
 
 /**
- * This UI is the application entry point. A UI may either represent a browser window 
+ * This UI is the application entry point. A UI may either represent a browser window
  * (or tab) or some part of a html page where a Vaadin application is embedded.
  * <p>
- * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be 
+ * The UI is initialized using {@link #init(VaadinRequest)}. This method is intended to be
  * overridden to add component to the user interface and initialize non-component functionality.
  */
 @Theme("mytheme")
@@ -64,14 +64,14 @@ public class MyUI extends UI {
         Controleur control ;
         final TextField rechercheField = new TextField();
         Button rechercher = new Button("rechercher") ;
-        
+
 
 
     /* explicit callback */
     /* https://vaadin.com/docs/-/part/framework/application/application-events.html */
     public class ClickMeClass implements Button.ClickListener
     {
-        public void buttonClick(ClickEvent event) 
+        public void buttonClick(ClickEvent event)
         {
             String s=(String)rechercheField.getValue();
 
@@ -79,46 +79,55 @@ public class MyUI extends UI {
             if (!control.getList().isEmpty()){
                 suggestion.addItems(control.getList());
             }
-            
+            else{
+              control.entrerNomMusique(s);
+              playlist.removeAllItems();
+              playlist.addItems(control.getPlaylist());
+            }
 
-      
+
         }
     }
     public class ClickMeClass2 implements Button.ClickListener
     {
-        public void buttonClick(ClickEvent event) 
+        public void buttonClick(ClickEvent event)
         {
             control.chooseMusic((String)suggestion.getValue()) ;
             playlist.addItem(suggestion.getValue());
             suggestion.removeItem(suggestion.getValue());
 
 
-        
+
         }
     }
         public class ClickMeClass3 implements Button.ClickListener
     {
-        public void buttonClick(ClickEvent event) 
+        public void buttonClick(ClickEvent event)
         {
             control.retirerMusique((String)playlist.getValue()) ;
             playlist.removeItem(playlist.getValue());
 
 
-        
+
         }
     }
-   
 
-    
+
+
     public class gestionBarre implements Property.ValueChangeListener {
 
 
-        public void valueChange(Property.ValueChangeEvent event) 
+        public void valueChange(Property.ValueChangeEvent event)
         {
             String s = (String)event.getProperty().getValue();
             control.entrerNomTag(s);
             if (!control.getList().isEmpty()){
                 suggestion.addItems(control.getList());
+            }
+            else{
+              control.entrerNomMusique(s);
+              playlist.removeAllItems();
+              playlist.addItems(control.getPlaylist());
             }
 
 
@@ -129,20 +138,20 @@ public class MyUI extends UI {
 
     public class gestionSauvergarde implements Property.ValueChangeListener {
 
-         public void valueChange(Property.ValueChangeEvent event) 
+         public void valueChange(Property.ValueChangeEvent event)
         {
             Collection<String>  s = (Collection<String>)event.getProperty().getValue();
-           
+
            // control.savePlaylist(s);
 
-           
+
 
         }
 
 
 
 
-    }    
+    }
 
 
     @Override
@@ -180,7 +189,7 @@ public class MyUI extends UI {
          layout.setMargin(true);
          layout.setSpacing(true);
 
-        
+
          setContent(layout);
     }
 
@@ -190,7 +199,3 @@ public class MyUI extends UI {
     }
 
 }
- 
-
-
-
