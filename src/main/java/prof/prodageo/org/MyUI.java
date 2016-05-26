@@ -57,10 +57,12 @@ public class MyUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
         final TextField rechercheField = new TextField();
         Button rechercher = new Button("rechercher") ;
+        Button save = new Button("save") ;
         private  com.vaadin.ui.TextArea editor;
       
         final HorizontalLayout hol = new HorizontalLayout();
         private TwinColSelect twc ;
+        //private Controleur control ;
         
 
 
@@ -70,11 +72,19 @@ public class MyUI extends UI {
     {
         public void buttonClick(ClickEvent event) 
         {
-        
-            layout.addComponent(new Label(rechercheField.getValue()));
+           String s=(String)rechercheField.getValue();
+            //control.entrerNomTag(s) ;
+            //twc.addItem(control.getList());
         }
     }
-
+    public class ClickMeClass2 implements Button.ClickListener
+    {
+        public void buttonClick(ClickEvent event) 
+        {
+            //control.savePlaylist();
+        
+        }
+    }
    
 
     
@@ -84,61 +94,69 @@ public class MyUI extends UI {
         public void valueChange(Property.ValueChangeEvent event) 
         {
             String s = (String)event.getProperty().getValue();
-            layout.addComponent(new Label(s));
+
+            //control.entrerNomTag(s);
+            //twc.addItem(control.getList());
+
 
 
         }
 
     }
 
-        
+    public class gestionSauvergarde implements Property.ValueChangeListener {
+
+         public void valueChange(Property.ValueChangeEvent event) 
+        {
+            Collection<String>  s = (Collection<String>)event.getProperty().getValue();
+           
+           // control.savePlaylist(s);
+
+           
+
+        }
+
+
+
+
+    }    
 
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
 
-        
-        // final VerticalLayout layout = new VerticalLayout();
-        
-        // final TextField name = new TextField();
-        rechercheField.setCaption("entrez un tag ou une musique");
-
-        /*
-        Button button = new Button("Click Me");
-        button.addClickListener( e -> {
-            layout.addComponent(new Label("Thanks " + name.getValue() 
-                    + ", it works!"));
-            log.info("Button clicked with value : " + name.getValue());
-        });
-        */
+    
+        rechercheField.setCaption("Entrer un tag ou une musique");
         ClickMeClass callback = new ClickMeClass() ;
+        ClickMeClass2 callback2 = new ClickMeClass2() ;
         
         layout.addComponents(rechercheField, rechercher);
          hol.setWidth("400px");
-         hol.setWidth("400px");
-         //List<String> list= Arrays.asList(new String[] {
-           // "Berlin", "Brussels", "Helsinki", "Madrid", "Oslo", "Paris",
-           // "Stockholm" });
-         //musiqueTag = new ListSelectSingleExample(hol,"musiques recherchées",list);
-         //maPlay = new ListSelectSingleExample(hol,"  ma playlist" ,list);
-
+ 
          TwinColSelect twc = new TwinColSelect("Select Targets");
 
-        // Put some items in the select
+        // Controleur control= new Controleur() ;
+        // this.control=control;
+
+
+         
+
+
         twc.addItems("Mercury", "Venus", "Earth", "Mars",
         "Jupiter", "Saturn", "Uranus", "Neptune");
 
-        // Few items, so we can set rows to match item count
-        twc.setRows(twc.size());
+        //twc.addItems(control.getPlaylist();
 
-        // Preselect a few items by creating a set
+
+
+
+
+        twc.setRows(twc.size());
         HashSet<String> hs = new  HashSet<String>( Arrays.asList("Mercury", "Venus", "Earth", "Mars",
         "Jupiter", "Saturn", "Uranus", "Neptune"));
+       // HashSet<String> hs = new  HashSet<String>(control.getPlaylist());
         twc.setValue(hs);
-
-        // Handle value changes
-        twc.addValueChangeListener(event -> // Java 8
-        layout.addComponent(new Label("maPlaylist: " + event.getProperty().getValue())));
+        twc.addValueChangeListener(new gestionSauvergarde()) ;
         hol.addComponent(twc);
         
 
@@ -147,11 +165,13 @@ public class MyUI extends UI {
         gestionBarre gb = new gestionBarre() ;
         rechercheField.addListener(gb);
         rechercher.addClickListener( callback ) ;
-        
+        save.addClickListener(callback2 ) ;
 
          layout.addComponent(hol);
+         layout.addComponent(save) ;
          layout.setMargin(true);
          layout.setSpacing(true);
+
         
         setContent(layout);
     }
