@@ -55,14 +55,15 @@ public class MyUI extends UI {
 
     /* explicit declaration as attributes of graphical components for GenMyModel */
         final VerticalLayout layout = new VerticalLayout();
+        final HorizontalLayout hol = new HorizontalLayout();
+        final HorizontalLayout hol2 =new HorizontalLayout();
+        Button ajouter = new Button("ajouter") ;
+        Button retirer = new Button("retirer") ;
+        ListSelect playlist = new ListSelect("Playlist") ;
+        ListSelect suggestion = new ListSelect("Suggestions") ;
+        Controleur control ;
         final TextField rechercheField = new TextField();
         Button rechercher = new Button("rechercher") ;
-        Button save = new Button("save") ;
-        private  com.vaadin.ui.TextArea editor;
-      
-        final HorizontalLayout hol = new HorizontalLayout();
-        private TwinColSelect twc ;
-        //private Controleur control ;
         
 
 
@@ -72,16 +73,37 @@ public class MyUI extends UI {
     {
         public void buttonClick(ClickEvent event) 
         {
-           String s=(String)rechercheField.getValue();
-            //control.entrerNomTag(s) ;
-            //twc.addItem(control.getList());
+            String s=(String)rechercheField.getValue();
+
+            control.entrerNomTag(s);
+            if (!control.getList().isEmpty()){
+                suggestion.addItems(control.getList());
+            }
+            
+
+      
         }
     }
     public class ClickMeClass2 implements Button.ClickListener
     {
         public void buttonClick(ClickEvent event) 
         {
-            //control.savePlaylist();
+            control.chooseMusic((String)suggestion.getValue()) ;
+            playlist.addItem(suggestion.getValue());
+            suggestion.removeItem(suggestion.getValue());
+
+
+        
+        }
+    }
+        public class ClickMeClass3 implements Button.ClickListener
+    {
+        public void buttonClick(ClickEvent event) 
+        {
+            control.retirerMusique((String)playlist.getValue()) ;
+            playlist.removeItem(playlist.getValue());
+
+
         
         }
     }
@@ -94,9 +116,10 @@ public class MyUI extends UI {
         public void valueChange(Property.ValueChangeEvent event) 
         {
             String s = (String)event.getProperty().getValue();
-
-            //control.entrerNomTag(s);
-            //twc.addItem(control.getList());
+            control.entrerNomTag(s);
+            if (!control.getList().isEmpty()){
+                suggestion.addItems(control.getList());
+            }
 
 
 
@@ -124,56 +147,41 @@ public class MyUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        Controleur control =new Controleur();
 
-    
-        rechercheField.setCaption("Entrer un tag ou une musique");
+
         ClickMeClass callback = new ClickMeClass() ;
         ClickMeClass2 callback2 = new ClickMeClass2() ;
-        
-        layout.addComponents(rechercheField, rechercher);
-         hol.setWidth("400px");
- 
-         TwinColSelect twc = new TwinColSelect("Select Targets");
-
-        // Controleur control= new Controleur() ;
-        // this.control=control;
+        ClickMeClass3 callback3 =new ClickMeClass3() ;
 
 
-         
-
-
-        twc.addItems("Mercury", "Venus", "Earth", "Mars",
-        "Jupiter", "Saturn", "Uranus", "Neptune");
-
-        //twc.addItems(control.getPlaylist();
-
-
-
-
-
-        twc.setRows(twc.size());
-        HashSet<String> hs = new  HashSet<String>( Arrays.asList("Mercury", "Venus", "Earth", "Mars",
-        "Jupiter", "Saturn", "Uranus", "Neptune"));
-       // HashSet<String> hs = new  HashSet<String>(control.getPlaylist());
-        twc.setValue(hs);
-        twc.addValueChangeListener(new gestionSauvergarde()) ;
-        hol.addComponent(twc);
-        
-
-        
+        this.control = control ;
+        ArrayList<String> al = control.getPlaylist();
 
         gestionBarre gb = new gestionBarre() ;
         rechercheField.addListener(gb);
         rechercher.addClickListener( callback ) ;
-        save.addClickListener(callback2 ) ;
+        ajouter.addClickListener(callback2);
+        retirer.addClickListener(callback3);
 
-         layout.addComponent(hol);
-         layout.addComponent(save) ;
+
+
+
+
+        playlist.addItems(al);
+        playlist.setWidth("400px");
+        suggestion.setWidth("400px");
+         layout.addComponents(rechercher,rechercheField) ;
+         hol.addComponents(ajouter,retirer);
+         hol2.addComponents(suggestion ,playlist);
+         layout.addComponents(hol2,hol);
+
+
          layout.setMargin(true);
          layout.setSpacing(true);
 
         
-        setContent(layout);
+         setContent(layout);
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
